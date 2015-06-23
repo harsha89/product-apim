@@ -47,6 +47,7 @@ import org.wso2.am.integration.test.utils.base.APIMIntegrationBaseTest;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.context.TestUserMode;
 
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.ws.rs.core.Response;
@@ -84,6 +85,7 @@ public class SingleSignOnTestCase extends APIMIntegrationBaseTest {
     private String ssoAuthSessionID;
     private String samlRequest;
     private String providerName;
+  
     private String commonAuthUrl;
     private String httpsStoreUrl;
     private String httpsPublisherUrl;
@@ -105,6 +107,7 @@ public class SingleSignOnTestCase extends APIMIntegrationBaseTest {
     private final static String RELAY_STATE = "RelayState";
     //private HttpContext localContext;
     private final static String USER_AGENT = "Apache-HttpClient/4.2.5 (java 1.5)";
+    
 
     @BeforeClass(alwaysRun = true)
     public void init() throws APIManagerIntegrationTestException {
