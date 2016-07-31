@@ -67,9 +67,10 @@ public class MigrateFrom19to110 extends MigrationClientBase implements Migration
         String authzUser;
     }
 
-    public MigrateFrom19to110(String tenantArguments, String blackListTenantArguments, RegistryService registryService,
-            TenantManager tenantManager, boolean removeDecryptionFailedKeysFromDB) throws UserStoreException {
-        super(tenantArguments, blackListTenantArguments, tenantManager);
+    public MigrateFrom19to110(String tenantArguments, String blackListTenantArguments, String tenantRange,
+            RegistryService registryService, TenantManager tenantManager, boolean removeDecryptionFailedKeysFromDB)
+            throws UserStoreException {
+        super(tenantArguments, blackListTenantArguments, tenantRange, tenantManager);
         this.registryService = registryService;
         this.removeDecryptionFailedKeysFromDB = removeDecryptionFailedKeysFromDB;
     }

@@ -72,9 +72,10 @@ public class MigrateFrom110to200 extends MigrationClientBase implements Migratio
         public String authzUser;
     }
 
-    public MigrateFrom110to200(String tenantArguments, String blackListTenantArguments, RegistryService registryService,
-            TenantManager tenantManager, boolean removeDecryptionFailedKeysFromDB) throws UserStoreException {
-        super(tenantArguments, blackListTenantArguments, tenantManager);
+    public MigrateFrom110to200(String tenantArguments, String blackListTenantArguments, String tenantRange,
+            RegistryService registryService, TenantManager tenantManager, boolean removeDecryptionFailedKeysFromDB)
+            throws UserStoreException {
+        super(tenantArguments, blackListTenantArguments, tenantRange, tenantManager);
         this.registryService = registryService;
         this.removeDecryptionFailedKeysFromDB = removeDecryptionFailedKeysFromDB;
     }
@@ -117,6 +118,16 @@ public class MigrateFrom110to200 extends MigrationClientBase implements Migratio
 
     @Override
     public void statsMigration() throws APIMigrationException {
+        log.info("Stat Database migration for API Manager started");
+        String statScriptPath = CarbonUtils.getCarbonHome() + File.separator + "migration-scripts" + File.separator +
+                "110-200-migration" + File.separator + "stat" + File.separator;
+        try {
+            updateAPIManagerDatabase(statScriptPath);
+        } catch (SQLException e) {
+            log.error("error executing stat migration script", e);
+            throw new APIMigrationException(e);
+        }
+        log.info("Stat DB migration Done");
     }
 
     /**
@@ -583,6 +594,10 @@ public class MigrateFrom110to200 extends MigrationClientBase implements Migratio
                     if (trans == null) {
                         artifact.setAttribute("overview_transports", "http,https");
                     }
+                    String versionType = artifact.getAttribute("overview_versionType");
+                    if (versionType == null) {
+                        artifact.setAttribute("overview_versionType", "-");
+                    }
                 }
                 registryService.updateGenericAPIArtifacts(artifacts);
                 log.info("End rxt data migration for tenant " + tenant.getId() + '(' + tenant.getDomain() + ')');
@@ -848,6 +863,9 @@ public class MigrateFrom110to200 extends MigrationClientBase implements Migratio
                 GenericArtifact[] artifacts = registryService.getGenericAPIArtifacts();
 
                 updateSwaggerResources(artifacts, tenant);
+            } catch (Exception e) {
+                // If any exception happen during a tenant data migration, we continue the other tenants
+                log.error("Unable to migrate the swagger resources of tenant : " + tenant.getDomain(), e);
             } finally {
                 registryService.endTenantFlow();
             }
@@ -974,7 +992,8 @@ public class MigrateFrom110to200 extends MigrationClientBase implements Migratio
                 }
                 JSONArray authScopeArray = new JSONArray();
                 JSONObject authScopeObj = new JSONObject();
-                authScopeObj.put(api.getId().getApiName() + Constants.SECURITY_DEFINITION_NAME_KEY_SUFFIX, scopeList);
+//                authScopeObj.put(api.getId().getApiName() + Constants.SECURITY_DEFINITION_NAME_KEY_SUFFIX, scopeList);
+                authScopeObj.put("default", scopeList);
                 authScopeArray.add(authScopeObj);
                 re.put(Constants.SWAGGER_PATH_SECURITY_KEY, authScopeArray);
 
@@ -984,6 +1003,25 @@ public class MigrateFrom110to200 extends MigrationClientBase implements Migratio
                     JSONArray prodArr = new JSONArray();
                     prodArr.add((String) produceObj);
                     re.put(Constants.SWAGGER_PRODUCES, prodArr);
+                }
+
+                //for resources parameters schema changing
+                JSONArray parameters = (JSONArray) re.get(Constants.SWAGGER_PATH_PARAMETERS_KEY);
+                if (parameters != null) {
+                    for (int i = 0; i < parameters.size(); i++) {
+                        JSONObject parameterObj = (JSONObject) parameters.get(i);
+                        JSONObject schemaObj = (JSONObject) parameterObj.get(Constants.SWAGGER_BODY_SCHEMA);
+                        if (schemaObj != null) {
+                            JSONObject propertiesObj = (JSONObject) schemaObj.get(Constants.SWAGGER_PROPERTIES_KEY);
+                            if (propertiesObj == null) {
+                                JSONObject propObj = new JSONObject();
+                                JSONObject payObj = new JSONObject();
+                                payObj.put(Constants.SWAGGER_PARAM_TYPE, Constants.SWAGGER_STRING_TYPE);
+                                propObj.put(Constants.SWAGGER_PAYLOAD_KEY, payObj);
+                                schemaObj.put(Constants.SWAGGER_PROPERTIES_KEY, propObj);
+                            }
+                        }
+                    }
                 }
 
                 //for resources response object
@@ -1026,7 +1064,8 @@ public class MigrateFrom110to200 extends MigrationClientBase implements Migratio
         sec.put(Constants.SECURITY_DEFINITION_FLOW_KEY, Constants.SECURITY_DEFINITION_DEFAULT_GRANT_TYPES);
         sec.put(Constants.SECURITY_DEFINITION_SCOPES_KEY, scopes);
         JSONObject securityDefinitionObject = new JSONObject();
-        securityDefinitionObject.put(apiName+Constants.SECURITY_DEFINITION_NAME_KEY_SUFFIX, sec);
+//        securityDefinitionObject.put(apiName+Constants.SECURITY_DEFINITION_NAME_KEY_SUFFIX, sec);
+        securityDefinitionObject.put("default", sec);
         return securityDefinitionObject;
     }
 
