@@ -48,6 +48,7 @@ public class Constants {
     public static final String ARG_OPTIONS = "options";
     public static final String ARG_COMPONENT = "component";
     public static final String ARG_MIGRATE_TENANTS = "tenants";
+    public static final String ARG_MIGRATE_TENANTS_RANGE = "tenantRange";
     public static final String ARG_MIGRATE_BLACKLIST_TENANTS = "blackListed";
     public static final String ARG_MIGRATE_ALL = "migrate";
     public static final String ARG_CLEANUP = "cleanup";
@@ -248,6 +249,10 @@ public class Constants {
 
     public static final String SWAGGER_PATH_SECURITY_KEY = "security";
     public static final String SWAGGER_PATH_PARAMETERS_KEY = "parameters";
+    public static final String SWAGGER_PAYLOAD_KEY = "payload";
+    public static final String SWAGGER_PROPERTIES_KEY = "properties";
+    public static final String SWAGGER_STRING_TYPE = "string";
+
     public static final String SYNAPSE_ENDPOINT_XML_ELEMENT = "endpoint";
     public static final String SYNAPSE_FAIL_OVER_XML_ELEMENT = "failover";
     public static final String SYNAPSE_LOAD_BALANCE_XML_ELEMENT = "loadbalance";

@@ -75,6 +75,7 @@ public class APIMMigrationServiceComponent {
         String specificVersion = System.getProperty(Constants.ARG_RUN_SPECIFIC_VERSION);
         String component = System.getProperty(Constants.ARG_COMPONENT);
         String tenants = System.getProperty(Constants.ARG_MIGRATE_TENANTS);
+        String tenantRange = System.getProperty(Constants.ARG_MIGRATE_TENANTS_RANGE);
         String blackListTenants = System.getProperty(Constants.ARG_MIGRATE_BLACKLIST_TENANTS);
         boolean migrateAll = Boolean.parseBoolean(System.getProperty(Constants.ARG_MIGRATE_ALL));
         boolean cleanupNeeded = Boolean.parseBoolean(System.getProperty(Constants.ARG_CLEANUP));
@@ -89,7 +90,7 @@ public class APIMMigrationServiceComponent {
             RegistryServiceImpl registryService = new RegistryServiceImpl();
             TenantManager tenantManager = ServiceHolder.getRealmService().getTenantManager();
 
-            MigrationClientFactory.initFactory(tenants, blackListTenants, registryService, tenantManager,
+            MigrationClientFactory.initFactory(tenants, blackListTenants, tenantRange, registryService, tenantManager,
                     removeDecryptionFailedKeysFromDB);
 
             MigrationExecutor.Arguments arguments = new MigrationExecutor.Arguments();

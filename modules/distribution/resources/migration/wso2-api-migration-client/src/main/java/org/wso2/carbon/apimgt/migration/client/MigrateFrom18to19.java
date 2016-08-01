@@ -93,9 +93,9 @@ public class MigrateFrom18to19 extends MigrationClientBase implements MigrationC
     private static final Log log = LogFactory.getLog(MigrateFrom18to19.class);
     private RegistryService registryService;
 
-    public MigrateFrom18to19(String tenantArguments, String blackListTenantArguments, RegistryService registryService,
-                             TenantManager tenantManager) throws UserStoreException {
-        super(tenantArguments, blackListTenantArguments, tenantManager);
+    public MigrateFrom18to19(String tenantArguments, String blackListTenantArguments, String tenantRange,
+            RegistryService registryService, TenantManager tenantManager) throws UserStoreException {
+        super(tenantArguments, blackListTenantArguments, tenantRange, tenantManager);
         this.registryService = registryService;
     }
 
