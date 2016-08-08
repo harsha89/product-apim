@@ -26,6 +26,7 @@ import org.wso2.carbon.apimgt.migration.client.MigrationClientFactory;
 import org.wso2.carbon.apimgt.migration.client.MigrationExecutor;
 import org.wso2.carbon.apimgt.migration.util.Constants;
 import org.wso2.carbon.apimgt.migration.util.RegistryServiceImpl;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
 import org.wso2.carbon.user.api.UserStoreException;
@@ -164,6 +165,7 @@ public class APIMMigrationServiceComponent {
     protected void setRealmService(RealmService realmService) {
         log.debug("Setting RealmService for WSO2 API Manager migration");
         ServiceHolder.setRealmService(realmService);
+        IdentityTenantUtil.setRealmService(realmService);
     }
 
     /**
@@ -176,6 +178,7 @@ public class APIMMigrationServiceComponent {
             log.debug("Unset Realm service");
         }
         ServiceHolder.setRealmService(null);
+        IdentityTenantUtil.setRealmService(null);
     }
 
     /**
