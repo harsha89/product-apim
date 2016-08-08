@@ -352,8 +352,7 @@ END;
 
 -- End of API-MGT Tables --
 
---permance indexes start--
-/
+--performance indexes start--
 create index IDX_ITS_LMT on IDN_THRIFT_SESSION (LAST_MODIFIED_TIME)
 /
 create index IDX_IOAT_AT on IDN_OAUTH2_ACCESS_TOKEN (ACCESS_TOKEN)
