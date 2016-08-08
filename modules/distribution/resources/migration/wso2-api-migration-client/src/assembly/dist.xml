@@ -19,6 +19,13 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.basedir}/src/main/resources/18to19Migration/sql-scripts/constraint</directory>
+            <outputDirectory>migration-scripts/18-19-migration/constraint</outputDirectory>
+            <includes>
+                <include>*.sql</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.basedir}/src/main/resources/19to110Migration/sql-scripts</directory>
             <outputDirectory>migration-scripts/19-110-migration</outputDirectory>
             <includes>
